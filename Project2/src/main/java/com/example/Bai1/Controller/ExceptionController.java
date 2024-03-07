@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -65,6 +67,26 @@ public class ExceptionController {
 		return ResponseDTO.<String>builder()
 				.status(409)
 				.msg(errorMessage)
+				.build();
+	}
+	
+	@ExceptionHandler({AccessDeniedException.class})
+	@ResponseStatus(code = HttpStatus.FORBIDDEN)	
+	public ResponseDTO<String> accessDenied(AccessDeniedException e){
+		log.info("INFO", e);
+		return ResponseDTO.<String>builder()
+				.status(403)
+				.msg("Access deny")
+				.build();
+	}
+	
+	@ExceptionHandler({BadCredentialsException.class})
+	@ResponseStatus(code = HttpStatus.FORBIDDEN)	
+	public ResponseDTO<String> unathorized(BadCredentialsException e){
+		log.info("INFO", e);
+		return ResponseDTO.<String>builder()
+				.status(401)
+				.msg(e.getMessage())
 				.build();
 	}
 }

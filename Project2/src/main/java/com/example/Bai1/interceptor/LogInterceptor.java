@@ -16,6 +16,9 @@ public class LogInterceptor implements HandlerInterceptor {
 		log.info("INTERCEPTOR");
 		log.info(request.getRemoteAddr());
 		log.info(request.getRequestURI());
+		
+//		if(request.getRequestURI().contains("department"))
+//			System.out.println("a b c d e");
 		return true; // cho đi tiếp
 	}
 	

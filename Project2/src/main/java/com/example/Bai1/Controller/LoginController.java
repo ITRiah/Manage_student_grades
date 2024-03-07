@@ -1,30 +1,39 @@
 package com.example.Bai1.Controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.servlet.http.HttpSession;
+import com.example.Bai1.Service.JWTService;
+import com.example.Bai1.dto.ResponseDTO;
 
-@Controller
+@RestController
 public class LoginController {
 	
-	@GetMapping("/login")
-	public String login() {
-		return "/login.html";
-	}
+	@Autowired
+	AuthenticationManager authenticationManager;
+	
+	@Autowired
+	JWTService jwtService;
 	
 	@PostMapping("/login")
-	public String login(
-			@RequestParam("username") String userName,
-			@RequestParam("password") String passWord,
-			HttpSession session) {
-		if(userName.equals("admin") && passWord.equals("123")) {
-			session.setAttribute("userName",userName );
-			return "redirect:/user/list";
-		}
-		else
-			return "redirect:/login";
+	public ResponseDTO<String> login(@RequestParam("username") String username,
+						@RequestParam("password") String password){
+		
+		//check tài khoản, mật khẩu
+		authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+		
+		//login success, gen token
+		return ResponseDTO.<String>builder()
+					.status(200)
+					.msg("ok")
+					.data(jwtService.create(username))
+					.build();
 	}
+	
+	
+	
 }

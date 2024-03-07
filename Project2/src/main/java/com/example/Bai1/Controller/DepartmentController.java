@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -37,6 +38,11 @@ public class DepartmentController {
 	}
 	
 	@GetMapping("/")
+	//@Secured({"ROLE_ADMIN", "ROLE_STUDENT"}) //phải có chữ ROLE_ trước quyền
+	//@RolesAllowed({"ROLE_ADMIN", "ROLE_STUDENT"}) //phải có chữ ROLE_ trước quyền
+	//@PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_STUDENT')") //phải có chữ ROLE_ trước quyền, thực thi trước khi gọi hàm
+	//@PreAuthorize("isAuthenticated()") //chỉ cần đăng nhập trước khi gọi hàm.
+	//@PostAuthorize
 	public ResponseDTO<DepartmentDTO> getById(@RequestParam("id") int id) {
 		DepartmentDTO departmentDTO = departmentService.getById(id);
 		return ResponseDTO.<DepartmentDTO>builder()
